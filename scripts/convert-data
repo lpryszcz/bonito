@@ -60,8 +60,8 @@ def main(args):
     max_bases = 0
     off_the_end_ref = 0
     off_the_end_sig = 0
-    min_samples_per_base = 8
-    max_samples_per_base = 16
+    min_samples_per_base = args.min_samples_per_base #8
+    max_samples_per_base = args.max_samples_per_base #16
 
     total_reads = num_reads(args.chunkify_file)
 
@@ -164,4 +164,7 @@ if __name__ == "__main__":
     parser.add_argument("--min-seq-len", default=128, type=int)
     parser.add_argument("--max-seq-len", default=256, type=int)
     parser.add_argument("--samples-per-read", default=0.03, type=float)
+    parser.add_argument("--min_samples_per_base", default=8, type=int)
+    parser.add_argument("--max_samples_per_base", default=16, type=int)
+    
     main(parser.parse_args())

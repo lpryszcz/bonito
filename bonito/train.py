@@ -37,7 +37,7 @@ def main(args):
     device = torch.device(args.device)
 
     print("[loading data]")
-    chunks, chunk_lengths, targets, target_lengths = load_data(limit=args.chunks, shuffle=True)
+    chunks, chunk_lengths, targets, target_lengths = load_data(data_dir=args.data_dir, limit=args.chunks, shuffle=True)
 
     split = np.floor(chunks.shape[0] * args.validation_split).astype(np.int32)
     train_dataset = ChunkDataSet(chunks[:split], chunk_lengths[:split], targets[:split], target_lengths[:split])
@@ -105,6 +105,7 @@ def argparser():
     )
     parser.add_argument("training_directory")
     parser.add_argument("config")
+    parser.add_argument("--data_dir", default=None)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--lr", default=1e-3, type=float)
     parser.add_argument("--seed", default=25, type=int)

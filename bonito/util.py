@@ -23,7 +23,7 @@ except ImportError:
     pass
 
 
-__dir__ = os.path.dirname(__file__)
+#__dir__ = os.path.dirname(__file__)
 split_cigar = re.compile(r"(?P<len>\d+)(?P<op>\D+)")
 
 
@@ -58,14 +58,16 @@ def decode_ctc(predictions, labels):
     return ''.join([labels[b] for b, g in groupby(path) if b])
 
 
-def load_data(shuffle=False, limit=None):
+def load_data(shuffle=False, limit=None, data_dir=None):
     """
     Load the training data
     """
-    chunks = np.load(os.path.join(__dir__, "data", "chunks.npy"), mmap_mode='r')
-    chunk_lengths = np.load(os.path.join(__dir__, "data", "chunk_lengths.npy"), mmap_mode='r')
-    targets = np.load(os.path.join(__dir__, "data", "references.npy"), mmap_mode='r')
-    target_lengths = np.load(os.path.join(__dir__, "data", "reference_lengths.npy"), mmap_mode='r')
+    if not data_dir:
+        data_dir = os.path.join(os.path.dirname(__file__), "data")
+    chunks = np.load(os.path.join(data_dir, "chunks.npy"), mmap_mode='r')
+    chunk_lengths = np.load(os.path.join(data_dir, "chunk_lengths.npy"), mmap_mode='r')
+    targets = np.load(os.path.join(data_dir, "references.npy"), mmap_mode='r')
+    target_lengths = np.load(os.path.join(data_dir, "reference_lengths.npy"), mmap_mode='r')
 
     if limit:
         chunks = chunks[:limit]
