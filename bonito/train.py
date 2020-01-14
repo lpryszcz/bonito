@@ -37,7 +37,7 @@ def main(args):
     device = torch.device(args.device)
 
     print("[loading data]")
-    chunks, chunk_lengths, targets, target_lengths = load_data(limit=args.chunks, shuffle=True)
+    chunks, chunk_lengths, targets, target_lengths = load_data(limit=args.chunks, shuffle=True, directory=args.directory)
 
     split = np.floor(chunks.shape[0] * args.validation_split).astype(np.int32)
     train_dataset = ChunkDataSet(chunks[:split], chunk_lengths[:split], targets[:split], target_lengths[:split])
@@ -58,8 +58,6 @@ def main(args):
     model.train()
 
     os.makedirs(workdir, exist_ok=True)
-    torch.save(model, os.path.join(workdir, 'model.py'))
-
     toml.dump({**config, **argsdict}, open(os.path.join(workdir, 'config.toml'), 'w'))
 
     optimizer = AdamW(model.parameters(), amsgrad=True, lr=args.lr)
@@ -73,7 +71,7 @@ def main(args):
 
     schedular = CosineAnnealingLR(optimizer, args.epochs * len(train_loader))
 
-    log_interval = np.floor(len(train_dataset) / args.batch * 0.10)
+    log_interval = np.floor(len(train_dataset) / args.batch * 0.05)
 
     for epoch in range(1, args.epochs + 1):
 
@@ -105,6 +103,7 @@ def argparser():
     )
     parser.add_argument("training_directory")
     parser.add_argument("config")
+    parser.add_argument("--directory", default=None)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--lr", default=1e-3, type=float)
     parser.add_argument("--seed", default=25, type=int)
